@@ -9,6 +9,9 @@
         "lint": "next lint"
     },
     "dependencies": {
+        "@emotion/react": "^11.10.6",
+        "@emotion/styled": "^11.10.6",
+        "@mui/material": "^5.11.11",
         "@types/node": "^18.14.2",
         "@typescript-eslint/parser": "^5.54.0",
         "eslint": "8.34.0",
