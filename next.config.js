@@ -1,5 +1,8 @@
+const nextEnv = require('next-env');
+require('dotenv').config();
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+    reactStrictMode: true,
 };
-module.exports = nextConfig;
+const withNextEnv = nextEnv();
+module.exports = withNextEnv({...nextConfig });
