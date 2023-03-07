@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { YouTube } from '@mui/icons-material'
 import Link from "next/link";
 interface MatchViewProps {
@@ -8,10 +8,10 @@ interface MatchViewProps {
   player2: string;
 }
 
-const MatchView = ({ytLink, timestamp, player1, player2} : MatchViewProps): JSX.Element => {
+const MatchView = ({ytLink = 'https://www.youtube.com', timestamp, player1 = 'Player1', player2 = 'Player2'} : MatchViewProps): JSX.Element => {
 
   return(
-  <Box flexDirection={"row"}>
+  <Stack direction='row' borderBottom='solid' justifyContent='center'>
     <Box>
       {player1}
     </Box>
@@ -21,6 +21,6 @@ const MatchView = ({ytLink, timestamp, player1, player2} : MatchViewProps): JSX.
     <a href={ytLink}>
       <YouTube/>
     </a>
-  </Box>)
+  </Stack>)
 };
 export default MatchView;
