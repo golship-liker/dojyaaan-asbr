@@ -15,12 +15,30 @@ const firebaseConfig = {
   measurementId: process.env.FB_MEASUREMENTID,
 };
 
-function Home({vidCol}) {
+function Home({matchVideos}) {
   return (
     <Stack className={styles.container}>
-      SOME SHIT: {vidCol}
+      SOME SHIT: {JSON.stringify(matchVideos)}
     </Stack>
   );
+}
+
+type Video = {
+  link: string;
+  v_channel: string;
+  v_name: string;
+  v_id: string;
+  v_timestamp: string; //Date ISO
+  version: string;
+  matches?: Match[]; //to be defined
+}
+
+type Match = {
+  timestamp: string;
+  player1: string;
+  player2: string;
+  p1Char: string;
+  p2Char: string;
 }
 
 export async function getStaticProps() {
@@ -28,17 +46,28 @@ export async function getStaticProps() {
   const db = getFirestore(firebaseApp);
 
   const vidCol = collection(db, 'match-videos');
-  const vidSnap = await getDocs(vidCol);
-  console.log(vidSnap.docs[0].data());
-  const vidList = vidSnap.docs;
-  const matchesCol = collection(db, `match-videos/${vidList[0].id}/matches`);
-  const matchesSnap = await getDocs(matchesCol);
-  const matchesList = matchesSnap.docs.map(doc => doc.data());
-  console.log(matchesList[0]);
+  const vidList = (await getDocs(vidCol)).docs;
+
+  const matchVideos: Video[] = [];
+
+  for(const doc of vidList) {
+    const data: Video = doc.data() as Video;
+    const matchesCol = collection(db, `match-videos/${vidList[0].id}/matches`);
+    const matchesSnap = await getDocs(matchesCol);
+    const matches: Match[] = matchesSnap.docs.map(doc => doc.data()) as Match[];
+    console.log('matches: ', matches);
+    matchVideos.push({
+      ...data,
+      matches
+    })
+  };
+
+  console.log(`Match Videos: ${matchVideos}`);
+
 
   return {
     props: {
-      vidCol: JSON.stringify(vidCol)
+      matchVideos
     }
   }
 }
