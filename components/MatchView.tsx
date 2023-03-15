@@ -18,7 +18,7 @@ const MatchView = ({ytLink = 'https://www.youtube.com', timestamp, player1 = 'Pl
     <Box>
       {player2}
     </Box>
-    <a href={ytLink}>
+    <a href={`${ytLink}?t=${timestamp}`}>
       <YouTube/>
     </a>
   </Stack>)

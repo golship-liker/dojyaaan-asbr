@@ -1,8 +1,9 @@
 import { Stack, Switch } from "@mui/material";
-import MatchView from "../components/MatchView";
 import styles from "../styles/Home.module.css";
 import { initializeApp } from "@firebase/app";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { Match, Video } from "../types";
+import VideoView from "../components/VideoView";
 
 ///PUT THESE IN PROPER ENV VARIABLES BEFORE MAKING THE GITHUB PUBLIC!!!!
 const firebaseConfig = {
@@ -16,30 +17,22 @@ const firebaseConfig = {
 };
 
 function Home({matchVideos}) {
+
+  const VideoList = () => {
+    return (
+      <>
+      {matchVideos.map((vid: Video) => <VideoView key={vid.v_id} {...vid}  />)}
+      </>
+    )
+  }
   return (
     <Stack className={styles.container}>
-      SOME SHIT: {JSON.stringify(matchVideos)}
+      <VideoList/>
     </Stack>
   );
 }
 
-type Video = {
-  link: string;
-  v_channel: string;
-  v_name: string;
-  v_id: string;
-  v_timestamp: string; //Date ISO
-  version: string;
-  matches?: Match[]; //to be defined
-}
 
-type Match = {
-  timestamp: string;
-  player1: string;
-  player2: string;
-  p1Char: string;
-  p2Char: string;
-}
 
 export async function getStaticProps() {
   const firebaseApp = initializeApp(firebaseConfig);
