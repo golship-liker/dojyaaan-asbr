@@ -1,9 +1,8 @@
 export type Video = {
-  link: string;
   v_channel: string;
   v_name: string;
   v_id: string;
-  v_timestamp: string; //Date ISO
+  v_date: string; //Date ISO
   version: string;
   matches?: Match[]; //to be defined
 };

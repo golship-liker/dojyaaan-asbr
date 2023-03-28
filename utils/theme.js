@@ -6,4 +6,5 @@ export const theme = createTheme({
             main: "#fcba03",
         },
     },
+    spacing: 4
 });

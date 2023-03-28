@@ -1,26 +1,54 @@
-import { Box, Stack } from "@mui/material";
-import { YouTube } from '@mui/icons-material'
+import { Box, Stack, styled, Typography, useTheme  } from "@mui/material";
+import Image from 'next/image';
+import { YouTube } from "@mui/icons-material";
 import Link from "next/link";
+import { Player } from "../types";
 interface MatchViewProps {
-  ytLink: string;
+  video: string;
   timestamp: string;
-  player1: string;
-  player2: string;
+  players: Player[];
 }
-
-const MatchView = ({ytLink = 'https://www.youtube.com', timestamp, player1 = 'Player1', player2 = 'Player2'} : MatchViewProps): JSX.Element => {
-
-  return(
-  <Stack direction='row' borderBottom='solid' justifyContent='center'>
-    <Box>
-      {player1}
-    </Box>
-    <Box>
-      {player2}
-    </Box>
-    <a href={`${ytLink}?t=${timestamp}`}>
-      <YouTube/>
-    </a>
-  </Stack>)
+const PlayerBox = styled("div")({
+  margin: "0 8 0 8",
+});
+const MatchView = ({
+  video,
+  timestamp,
+  players
+}: MatchViewProps): JSX.Element => {
+  const YOUTUBE_URL = "https://www.youtube.com/watch?v=";
+  const theme = useTheme();
+  return (
+    <Stack direction="row" justifyContent="center" spacing={theme.spacing()}>
+      <Stack direction="row">
+        <Image
+          src={players[0].characters[0].iconUrl}
+          alt={players[0].characters[0].name}
+          width={36}
+          height={36}
+          style={{
+            borderRadius: "50%",
+          }}
+        />
+        <Typography variant="body1">{players[0].name}</Typography>
+      </Stack>
+      <Typography variant="body1">vs</Typography>
+      <Stack direction="row">
+        <Image
+          src={players[1].characters[0].iconUrl}
+          alt={players[1].characters[0].name}
+          width={36}
+          height={36}
+          style={{
+            borderRadius: "50%",
+          }}
+        />
+        <Typography variant="body1">{players[1].name}</Typography>
+      </Stack>
+      <a href={`${YOUTUBE_URL}${video}&t=${timestamp}`}>
+        <YouTube />
+      </a>
+    </Stack>
+  );
 };
 export default MatchView;
