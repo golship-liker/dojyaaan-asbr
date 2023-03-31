@@ -1,12 +1,8 @@
 import { Stack, Switch } from "@mui/material";
 import styles from "../styles/Home.module.css";
 import { initializeApp } from "@firebase/app";
-import { getFirestore, collection, getDocs, where, query, CollectionReference } from "firebase/firestore";
-import { mockMatches } from "../mocks/mockMatches";
-import { Match, Video } from "../types";
-import VideoView from "../components/VideoView";
-import { FirestoreProvider, useFirebaseApp, useFirestoreCollectionData } from "reactfire";
-import { useFirestore } from "../hooks/firebase/useFireStore";
+import { getFirestore } from "firebase/firestore";
+import { FirestoreProvider, useFirebaseApp} from "reactfire";
 import MatchList from "../components/MatchList";
 
 ///PUT THESE IN PROPER ENV VARIABLES BEFORE MAKING THE GITHUB PUBLIC!!!!

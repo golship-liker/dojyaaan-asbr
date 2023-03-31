@@ -1,13 +1,15 @@
 import { useRouter } from "next/router";
 import { collection, CollectionReference } from "firebase/firestore";
-import { useFirestore, useFirestoreCollectionData, useFirestoreDocData } from "reactfire";
+import { useFirestore, useFirestoreCollection, useFirestoreDocData } from "reactfire";
 import { mockMatches } from "../mocks/mockMatches";
 import MatchView from "./MatchView";
 import VideoView from "./VideoView";
 import { Match } from "../types";
 import { Box, Divider, Stack } from "@mui/material";
 import { ParsedUrlQuery } from "querystring";
-import { useEffect, Suspense } from "react";
+import { useEffect, Suspense, useMemo } from "react";
+import useFetchMatches from "../hooks/firebase/useFetchMatches";
+import { Client } from "react-hydration-provider";
 
 export interface MatchQuery extends ParsedUrlQuery {
   page?: string;
@@ -16,7 +18,6 @@ export interface MatchQuery extends ParsedUrlQuery {
   p2chars?: string;
   p1?: string;
   p2?: string;
-  title?: string;
   versions?: string[];
   channels?: string[];
 }
@@ -28,16 +29,20 @@ const MatchList = () => {
   const query = router.query as MatchQuery;
   //console.log(query);
   //firestore code - to be put into a proper hook or somethin
-  const db = useFirestore();
-  const matchesRef = collection(db, "matches") as CollectionReference<Match>;
-  const { data: matches, status } = useFirestoreCollectionData(matchesRef);
 
-  const availMatches = matches;
-  //console.log(availMatches);
+  const { data, status } = useFetchMatches(query);
+
+  const matches = useMemo(() => {
+    return data?.docs?.map((doc) => doc.data()) ?? undefined;
+  }, [data])
+
+  console.log(matches);
   return (
     <Stack sx={{ alignItems: "center" }}>
       <Box color="primary"> PLACEHOLDER </Box>
-      {availMatches ? <ViewList availMatches={availMatches} /> : <p> Loading... </p>}
+      <Client>
+        {matches ? <ViewList availMatches={matches} /> : <p> Loading... </p>}
+      </Client>
       <Box color="primary"> PLACEHOLDER </Box>
     </Stack>
   );
@@ -48,7 +53,7 @@ const ViewList = ({ availMatches }) => {
   
   return (
     <Stack divider={<Divider flexItem />}>
-      {availMatches.map((match) => {
+      {availMatches.map((match: Match) => {
         console.log(match.players);
         if (!foundVideos[match.video]) {
           foundVideos[match.video] = true;
@@ -57,7 +62,7 @@ const ViewList = ({ availMatches }) => {
               <VideoView
                 v_id={match.video}
                 v_name={match.title}
-                v_channel={match.channel.name}
+                v_channel={match.channel}
                 v_date={match.date}
                 version={match.version}
               />

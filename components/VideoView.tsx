@@ -16,14 +16,13 @@ const VideoView = ({v_name, v_channel, v_id, v_date, version, matches} : VideoVi
   //   )
   // }
 
-  return(
-  <Stack direction='column' justifyContent='center'>
-    <Box>
-      {v_name}
-    </Box>
-    <Box>
-      {v_date} | {version} | {v_channel}
-    </Box>
-  </Stack>)
+  return (
+    <Stack direction="column" justifyContent="center">
+      <Box>{v_name}</Box>
+      <Box>
+        {v_date.toDate().toISOString().substring(0, 10)} | {version} | {v_channel}
+      </Box>
+    </Stack>
+  );
 };
 export default VideoView;
