@@ -1,7 +1,4 @@
 import { useRouter } from "next/router";
-import { collection, CollectionReference } from "firebase/firestore";
-import { useFirestore, useFirestoreCollection, useFirestoreDocData } from "reactfire";
-import { mockMatches } from "../mocks/mockMatches";
 import MatchView from "./MatchView";
 import VideoView from "./VideoView";
 import { Match } from "../types";
@@ -27,8 +24,6 @@ const PlayerSearch = ({ characters }) => {};
 const MatchList = () => {
   const router = useRouter();
   const query = router.query as MatchQuery;
-  //console.log(query);
-  //firestore code - to be put into a proper hook or somethin
 
   const { data, status } = useFetchMatches(query);
 
