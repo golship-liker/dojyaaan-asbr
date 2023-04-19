@@ -2,11 +2,15 @@ import { useRouter } from "next/router";
 import MatchView from "./MatchView";
 import VideoView from "./VideoView";
 import { Match } from "../types";
-import { Box, Divider, Stack } from "@mui/material";
+import { Box, Divider, Pagination, Stack } from "@mui/material";
 import { ParsedUrlQuery } from "querystring";
-import { useEffect, Suspense, useMemo } from "react";
+import { useEffect, Suspense, useMemo, useState, useRef, useCallback } from "react";
 import useFetchMatches from "../hooks/firebase/useFetchMatches";
 import { Client } from "react-hydration-provider";
+import { DocumentSnapshot } from "firebase/firestore";
+import useFetchMatchesCount from "../hooks/firebase/useFetchMatchesCount";
+import { ITEMS_PER_PAGE } from "./consts";
+import MatchSearch from "./MatchSearch";
 
 export interface MatchQuery extends ParsedUrlQuery {
   page?: string;
@@ -19,29 +23,65 @@ export interface MatchQuery extends ParsedUrlQuery {
   channels?: string[];
 }
 
-const PlayerSearch = ({ characters }) => {};
+
 
 const MatchList = () => {
   const router = useRouter();
   const query = router.query as MatchQuery;
 
-  const { data, status } = useFetchMatches(query);
+  const [page, setPage] = useState(0);
+
+  const cursors = useRef<Map<number, DocumentSnapshot>>(new Map());
+
+  const { data, status } = useFetchMatches(query, cursors.current.get(page));
 
   const matches = useMemo(() => {
     return data?.docs?.map((doc) => doc.data()) ?? undefined;
-  }, [data])
+  }, [data]);
 
-  console.log(matches);
+  const onPageChanged = useCallback(
+    (nextPage: number) => {
+      setPage((page) => {
+        // first, we save the last document as page's cursor
+        cursors.current.set(page + 1, data.docs[data.docs.length - 1]);
+
+        // then we update the state with the next page's number
+        return nextPage;
+      });
+    },
+    [data]
+  );
+  
   return (
     <Stack sx={{ alignItems: "center" }}>
-      <Box color="primary"> PLACEHOLDER </Box>
+      <MatchSearch />
       <Client>
         {matches ? <ViewList availMatches={matches} /> : <p> Loading... </p>}
       </Client>
-      <Box color="primary"> PLACEHOLDER </Box>
+      <MatchPagination query={query} currentPage={page} pageChanged={onPageChanged}/>
     </Stack>
   );
 };
+
+const MatchPagination = ({query, currentPage, pageChanged} : {query: MatchQuery, currentPage: number, pageChanged: (page: number) => unknown}) => {
+  const fetchMatchesCount = useFetchMatchesCount();
+  const [matchesCount, setMatchesCount] = useState<number>();
+
+  useEffect(() => {
+    fetchMatchesCount(query).then((result) => {
+      setMatchesCount(result.data().count);
+    });
+  }, [fetchMatchesCount, query])
+
+  const totalPages = Math.floor(matchesCount / ITEMS_PER_PAGE);
+  return (
+    <Client> 
+      <Box>
+      <Pagination count={0} page={currentPage + 1} onChange={(event, value) => {pageChanged(value)}}/>
+      </Box>
+    </Client>
+  )
+}
 
 const ViewList = ({ availMatches }) => {
   const foundVideos = {};

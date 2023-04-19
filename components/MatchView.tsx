@@ -2,15 +2,14 @@ import { Box, Stack, styled, Typography, useTheme  } from "@mui/material";
 import Image from 'next/image';
 import { YouTube } from "@mui/icons-material";
 import Link from "next/link";
-import { Player } from "../types";
+import { MatchPlayer } from "../types";
+
 interface MatchViewProps {
   video: string;
   timestamp: string;
-  players: Player[];
+  players: MatchPlayer[];
 }
-const PlayerBox = styled("div")({
-  margin: "0 8 0 8",
-});
+
 const MatchView = ({
   video,
   timestamp,
