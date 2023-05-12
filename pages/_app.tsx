@@ -5,6 +5,7 @@ import Layout from "../components/layout";
 import { initializeApp } from "@firebase/app";
 import { FirebaseAppProvider } from "reactfire";
 import { HydrationProvider } from "react-hydration-provider";
+import {SessionProvider} from 'next-auth/react';
 const firebaseConfig = {
   apiKey: process.env.FB_APIKEY,
   authDomain: process.env.FB_AUTHDOMAIN,
@@ -19,13 +20,15 @@ export default function App({ Component, pageProps }) {
   const app = initializeApp(firebaseConfig);
   return (
     <HydrationProvider>
-      <FirebaseAppProvider firebaseApp={app}>
-        <ThemeProvider theme={theme}>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </ThemeProvider>
-      </FirebaseAppProvider>
+      <SessionProvider>
+        <FirebaseAppProvider firebaseApp={app}>
+          <ThemeProvider theme={theme}>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </ThemeProvider>
+        </FirebaseAppProvider>
+      </SessionProvider>
     </HydrationProvider>
   );
 }

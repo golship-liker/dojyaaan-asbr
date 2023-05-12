@@ -1,13 +1,19 @@
 import { getFirestore } from "firebase/firestore";
+import { useRouter } from "next/router";
+import { ParsedUrlQuery } from "querystring";
 import { FirestoreProvider, useFirebaseApp } from "reactfire";
+import EditFlow from "../components/EditFlow/EditFlow";
+
+export interface EditQuery extends ParsedUrlQuery {
+  v?: string;
+};
 
 function Edit() {
   const firestore = getFirestore(useFirebaseApp());
-  //console.log(`firestore: ${JSON.stringify(firestore)}`);
-  //console.log(`app in firestore settings: ${JSON.stringify(firestore.app)}`);
+  const {query} = useRouter();
   return (
     <FirestoreProvider sdk={firestore}>
-      EDIT PAGE HERE
+      <EditFlow videoId={(query as EditQuery).v}/>
     </FirestoreProvider>
   );
 }
