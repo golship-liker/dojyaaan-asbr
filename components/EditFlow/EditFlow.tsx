@@ -1,6 +1,7 @@
 import { Stepper, Step, StepLabel, Box } from "@mui/material";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { Video } from "../../types";
 import SignIn from "./EditSteps/SignIn/SignIn";
 
 const stepLabels = ["Sign in", "Enter Youtube Link", "Confirm Video", "Timestamps"];
@@ -23,8 +24,8 @@ export type StepConfig = {
 
 const EditFlow = ({ videoId }: EditFlowProps) => {
   const [activeStep, setActiveStep] = useState(Steps.ENTER_LINK);
+  const [currentVideo, setCurrentVideo] = useState(undefined);
   const { data, status } = useSession();
-
   const stepConfigs: Record<Steps, StepConfig> = {
     [Steps.SIGN_IN]: {
       content: <SignIn />,
@@ -39,6 +40,10 @@ const EditFlow = ({ videoId }: EditFlowProps) => {
       content: <>This Would be a timestamps page</>,
     },
   };
+
+  const handleVideoChange = async (video: Video) => {
+    
+  }
 
   useEffect(() => {
     if (status === "unauthenticated") {

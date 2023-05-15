@@ -6,15 +6,8 @@ import MatchView from './MatchView';
 
 interface VideoViewProps extends Video {};
 
-const VideoView = ({v_name, v_channel, v_id, v_date, version, matches} : VideoViewProps): JSX.Element => {
+const VideoView = ({v_name, v_channel, v_id, v_date, version} : VideoViewProps): JSX.Element => {
 
-  // const MatchesList = () => { 
-  //   return(
-  //     <>
-  //     {matches.map((m) => <MatchView key={m.timestamp} ytLink={link} timestamp={m.timestamp} player1={m.player1} player2={m.player2}/>)}
-  //     </>
-  //   )
-  // }
 
   return (
     <Stack direction="column" justifyContent="center">
