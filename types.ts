@@ -11,7 +11,7 @@ export type Video = {
 
 export type Match = {
   timestamp: string;
-  players: Player[];
+  players: MatchPlayer[];
   video: string;
   title: string;
   date: Timestamp;
@@ -29,9 +29,11 @@ export type Channel = {
 };
 
 export type Player = {
-  characters: Character[];
+  aliases?: string[];
   name: string;
 };
+
+export type MatchPlayer = Omit<Player, 'aliases'> & {characters: Character[]};
 
 export type Character = {
   id: string;
