@@ -6,6 +6,7 @@ export type Video = {
   v_id: string;
   v_date: Timestamp; //Date ISO
   version?: string;
+  description?: string;
 };
 
 export type Match = {

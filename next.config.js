@@ -19,6 +19,7 @@ module.exports = withNextEnv({...nextConfig,
         FB_STORAGEBUCKET: process.env.FB_STORAGEBUCKET,
         FB_MESSAGINGSENDERID: process.env.FB_MESSAGINGSENDERID,
         FB_APPID: process.env.FB_APPID,
-        FB_MEASUREMENTID: process.env.FB_MEASUREMENTID
+        FB_MEASUREMENTID: process.env.FB_MEASUREMENTID,
+        YT_API_KEY: process.env.YT_API_KEY
     }
 });

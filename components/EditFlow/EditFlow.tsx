@@ -3,6 +3,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { Video } from "../../types";
 import SignIn from "./EditSteps/SignIn/SignIn";
+import YoutubeLinkEntryForm from "./EditSteps/YoutubeLinkEntryForm/YoutubeLinkEntryForm";
 
 const stepLabels = ["Sign in", "Enter Youtube Link", "Confirm Video", "Timestamps"];
 
@@ -26,12 +27,15 @@ const EditFlow = ({ videoId }: EditFlowProps) => {
   const [activeStep, setActiveStep] = useState(Steps.ENTER_LINK);
   const [currentVideo, setCurrentVideo] = useState(undefined);
   const { data, status } = useSession();
+  const handleVideoChange = async (video: Video) => {
+    setCurrentVideo(video);
+  };
   const stepConfigs: Record<Steps, StepConfig> = {
     [Steps.SIGN_IN]: {
       content: <SignIn />,
     },
     [Steps.ENTER_LINK]: {
-      content: <>This Would be an enter link page</>,
+      content: <YoutubeLinkEntryForm onVideoChange={handleVideoChange} />,
     },
     [Steps.VIDEO_CONFIRM]: {
       content: <>This Would be a video details confirmation page</>,
@@ -41,17 +45,19 @@ const EditFlow = ({ videoId }: EditFlowProps) => {
     },
   };
 
-  const handleVideoChange = async (video: Video) => {
-    
-  }
-
   useEffect(() => {
     if (status === "unauthenticated") {
       setActiveStep(Steps.SIGN_IN);
     } else if (status === "authenticated") {
-      !!videoId ? setActiveStep(Steps.TIMESTAMPS) : setActiveStep(Steps.ENTER_LINK)
+      if (!!videoId) {
+        setActiveStep(Steps.TIMESTAMPS);
+      } else if (currentVideo) {
+        setActiveStep(Steps.VIDEO_CONFIRM);
+      } else {
+        setActiveStep(Steps.ENTER_LINK)
+      }
     }
-  }, [status, videoId]);
+  }, [status, videoId, currentVideo]);
 
   const activeStepConfig = stepConfigs[activeStep];
 
@@ -66,7 +72,7 @@ const EditFlow = ({ videoId }: EditFlowProps) => {
           );
         })}
       </Stepper>
-      <>{ status === 'loading' ? <>Loading...</> : activeStepConfig.content}</>
+      <>{status === "loading" ? <>Loading...</> : activeStepConfig.content}</>
     </Box>
   );
 };

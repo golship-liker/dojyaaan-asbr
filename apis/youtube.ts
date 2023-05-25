@@ -19,7 +19,7 @@ export async function fetchYoutubeVideoDetails(id: string) {
     params: {
       id,
       part: "snippet",
-      fields: "items(snippet/title, snippet/description, snippet/channelTitle)",
+      fields: "items(snippet/title, snippet/description, snippet/channelTitle, snippet/publishedAt)",
     },
   });
 
